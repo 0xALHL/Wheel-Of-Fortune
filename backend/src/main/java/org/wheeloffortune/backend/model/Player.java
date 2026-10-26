@@ -8,4 +8,18 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor 
 @NoArgsConstructor
 public class Player {
+
+    // Encapsulation for variables
+    private String firstName;
+    private String lastName;
+
+    // This represents dollars ?
+    private int roundEarnings;
+    private int totalEarnings;
+
+    // Maybe handles updated winnings
+
+
+
+
 }
