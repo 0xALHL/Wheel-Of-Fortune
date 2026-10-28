@@ -1,2 +1,9 @@
+The Lorax Team
 
-My name is Nymere Smith. I am a Computer Science student interested in software engineering, backend development, and learning more about systems and full-stack development. I enjoy building projects, improving my programming skills, and gaining experience with tools such as Java, Spring Boot, Git, and databases.
+Ayala, Oscar <ayalao1@lasalle.edu>
+Kendall, Damon <kendalld1@lasalle.edu>
+Smith, Nymere <smithn40@lasalle.edu>
+Taylor, Damia <taylord25@lasalle.edu>
+
+GitHub Link: https://github.com/0xALHL/Wheel-Of-Fortune.git
+Trello Link: https://trello.com/b/blRYjKXi/lorax-sprint-team
