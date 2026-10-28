@@ -1,5 +1,4 @@
 # The Lorax Team
-
 Ayala, Oscar (<ayalao1@lasalle.edu>)
 
 Kendall, Damon (<kendalld1@lasalle.edu>)
