@@ -41,7 +41,6 @@ Once the game interface is available:
 Note: Some features may not be available until their user stories have been implemented.
 
 ## User Stories
-- [ ] 2. As the “host”, I want the game to choose a clue and display a blank board corresponding to the clue so that we can have an interesting variety of clues and so that we can visualize.
 - [ ] 1. As the CFO, I want the game to display ads of potential interest to the player, so that we can monetize the game
 - [ ] 2. As the “host”, I want the game to choose a clue and display a blank board corresponding to the clue so that we can have an interesting variety of clues and so that we can visualize.
 - [ ] 3. As the host, I want a wheel to be created for the current round so that each round has different arrangement of values.
