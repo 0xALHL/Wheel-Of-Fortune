@@ -17,23 +17,29 @@ public class Player {
     private int roundEarnings;
     private int totalEarnings;
 
-    // Maybe handles updated winnings
+        // Update the round earnings by adding the amount to the current round earnings
+    public void updateRoundEarnings(int amount) {
 
-    public addRoundEarnings(int amount) {
         if (amount < 0) {
             throw new IllegalArgumentException("Earnings can't be negative");
         }
 
         this.roundEarnings += amount;
+
     }
-        // Reset Earnings for each round
+
+    // Reset the round earnings to zero
     public void resetRoundEarnings() {
         this.roundEarnings = 0;
     }
 
-    public void bankWinnings() {
+    // Bank the round earnings by adding them to the total earnings and resetting
+    public void bankRoundEarnings() {
+
         this.totalEarnings += this.roundEarnings;
-        this.roundEarnings = 0;
+        resetRoundEarnings();
+
     }
 
+       
 }
