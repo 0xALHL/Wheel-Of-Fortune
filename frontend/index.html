@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wheel of Fortune</title>
+
+    <link rel="stylesheet" href="css/style.css" />
+
+    <script src="js/board.js" defer></script>
+</head>
+
+<body>
+    <h1>Wheel of Fortune</h1>
+
+    <section id="content">
+
+        <!-- Main game area -->
+        <section id="gameArea">
+
+            <!-- Board -->
+            <section id="boardSection">
+                <div id="board"></div>
+
+                <div id="category">Category</div>
+
+                <div id="message">
+                    Guess a consonant or solve the puzzle.
+                </div>
+            </section>
+
+            <!-- Wheel -->
+            <section id="wheelSection">
+                <h2>Wheel</h2>
+
+                <div id="wheel">
+                    <div id="wheelCenter"></div>
+                </div>
+
+                <p id="wheelResult">Spin that wheel!</p>
+
+                <!-- Spin button -->
+                <input type="button" id="btnSpin"
+                       value="Spin"
+                       onclick="alert('Wheel spinning will be added later.')" />
+            </section>
+
+        </section>
+
+        <!-- Guessing controls -->
+        <section id="guessSection">
+            <h2>Guess a Letter</h2>
+
+            <div class="guessRow">
+                <label for="letterGuess">Enter a letter:</label>
+                <input type="text" id="letterGuess" maxlength="1" />
+
+                <input type="button" id="btnGuess"
+                       value="Guess Letter"
+                       onclick="return btnGuess_onclick()" />
+            </div>
+
+            <div class="guessRow">
+                <label for="solveGuess">If ready to solve:</label>
+                <input type="text" id="solveGuess" />
+
+                <input type="button" id="btnSolve"
+                       value="Solve"
+                       onclick="return btnSolve_onclick()" />
+            </div>
+
+            <div class="guessRow buttonRow">
+                <input type="button" id="btnNewGame"
+                       value="New Puzzle"
+                       onclick="return btnNewGame_onclick()" />
+            </div>
+        </section>
+
+        <!-- 3 player boxes -->
+        <section id="playersSection">
+
+            <section class="playerBox" id="player1">
+                <h2>Player 1</h2>
+
+                <label for="roundMoney">Round Money:</label>
+                <input type="text" id="roundMoney"
+                       value="0" disabled />
+
+                <br />
+
+                <label for="totalMoney">Total Money:</label>
+                <input type="text" id="totalMoney"
+                       value="0" disabled />
+            </section>
+
+            <section class="playerBox" id="player2">
+                <h2>Player 2</h2>
+
+                <label for="player2RoundMoney">Round Money:</label>
+                <input type="text" id="player2RoundMoney"
+                       value="0" disabled />
+
+                <br />
+
+                <label for="player2TotalMoney">Total Money:</label>
+                <input type="text" id="player2TotalMoney"
+                       value="0" disabled />
+            </section>
+
+            <section class="playerBox" id="player3">
+                <h2>Player 3</h2>
+
+                <label for="player3RoundMoney">Round Money:</label>
+                <input type="text" id="player3RoundMoney"
+                       value="0" disabled />
+
+                <br />
+
+                <label for="player3TotalMoney">Total Money:</label>
+                <input type="text" id="player3TotalMoney"
+                       value="0" disabled />
+            </section>
+
+        </section>
+
+    </section>
+</body>
+</html>
