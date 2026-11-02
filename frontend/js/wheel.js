@@ -3,6 +3,9 @@
 let wheelSegments = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, "BANKRUPT", "LOSE A TURN"];
 let currentRotation = 0;
 
+//Pointer on wheel wasnt synced
+let POINTER_OFFSET_SLICES = 3; 
+
 function initWheelSegments() {
     let wheel = document.getElementById("wheel");
     if (!wheel) return;
@@ -52,10 +55,13 @@ function btnSpin_onclick() {
     // 1. Pick a random winning index
     let winningIndex = Math.floor(Math.random() * totalSegments);
 
-    // 2. Calculate exact center angle of this slice
-    let sliceCenter = (winningIndex * degPerSegment) + (degPerSegment / 2);
+    // 2. Adjust the target index by the pointer offset so the visual slice hits your CSS arrow
+    let visualIndex = (winningIndex + POINTER_OFFSET_SLICES + totalSegments) % totalSegments;
 
-    // 3. Calculate smooth forward rotation to land this exact center at the top pointer (0°)
+    // 3. Calculate exact center angle of this visual slice
+    let sliceCenter = (visualIndex * degPerSegment) + (degPerSegment / 2);
+
+    // 4. Calculate smooth forward rotation to land this exact center at the pointer
     let targetDeg = (360 - sliceCenter) % 360;
     let currentDeg = currentRotation % 360;
     let diff = targetDeg - currentDeg;
@@ -68,19 +74,23 @@ function btnSpin_onclick() {
         wheel.style.transform = `rotate(${currentRotation}deg)`;
     }
 
-    // 4. Award the exact prize matching the winning index after the 3-second animation
+    // 5. Award the prize matching the TRUE winning index after the 3-second animation
     setTimeout(() => {
         let prize = wheelSegments[winningIndex];
         let messageElement = document.getElementById("message");
         let wheelResult = document.getElementById("wheelResult");
 
         if (prize === "BANKRUPT") {
-            if (typeof player !== 'undefined') {
+            wheelResult.textContent = "Spin result: BANKRUPT!";
+            messageElement.textContent = "Ouch! Bankrupt. Round earnings lost. Turn over.";
+            
+            // Reset player's round score if a player object exists
+            if (typeof player !== 'undefined' && typeof player.resetRoundEarnings === 'function') {
                 player.resetRoundEarnings();
+            }
+            if (typeof UpdateMoneyDisplay === 'function') {
                 UpdateMoneyDisplay();
             }
-            wheelResult.textContent = "Spin result: BANKRUPT!";
-            messageElement.textContent = "Ouch! Bankrupt. Round earnings lost.";
         } 
         else if (prize === "LOSE A TURN") {
             wheelResult.textContent = "Spin result: LOSE A TURN!";

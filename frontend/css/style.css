@@ -265,7 +265,7 @@ input:disabled {
 #wheelSection::before {
     content: '';
     position: absolute;
-    top: 55px;
+    top: 70px;
     z-index: 10;
     width: 0;
     height: 0;
@@ -285,7 +285,6 @@ input:disabled {
     border-radius: 50%;
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
     overflow: hidden;
-    /* 12 precise 30-degree slices matching your wheelSegments array order */
     background: conic-gradient(
         #e74c3c 0deg 30deg,     /* 100 */
         #f1c40f 30deg 60deg,    /* 200 */

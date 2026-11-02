@@ -276,7 +276,7 @@ function btnSolve_onclick() {
     }
 }
 
-// User Story: Buy a Vowel ($250 cost)
+//Buy a Vowel
 function btnBuyVowel_onclick() {
     let vowel;
     let i;
