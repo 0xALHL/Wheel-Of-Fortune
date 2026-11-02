@@ -1,10 +1,8 @@
 "use strict";
 
-// Define wheel prize segments
 let wheelSegments = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, "BANKRUPT", "LOSE A TURN"];
 let currentRotation = 0;
 
-// Function to generate text labels inside the wheel slices
 function initWheelSegments() {
     let wheel = document.getElementById("wheel");
     if (!wheel) return;
@@ -20,7 +18,6 @@ function initWheelSegments() {
         let slice = document.createElement("div");
         slice.className = "wheel-slice";
         
-        // Align to the middle of each 30-degree conic segment
         let rotationAngle = (index * angleStep) + (angleStep / 2);
         slice.style.transform = `rotate(${rotationAngle}deg)`;
 
@@ -39,7 +36,6 @@ function initWheelSegments() {
     });
 }
 
-// Handle the Spin button click
 function btnSpin_onclick() {
     if (typeof gameOver !== 'undefined' && gameOver) {
         alert("This puzzle has already been solved.");
@@ -48,23 +44,33 @@ function btnSpin_onclick() {
 
     let wheel = document.getElementById("wheel");
     let spinButton = document.getElementById("btnSpin");
-    
-    // Disable spin button during animation
     if (spinButton) spinButton.disabled = true;
 
-    // Add multiple full turns (360 * 5 = 1800) + random extra angle
-    let extraDegree = Math.floor(Math.random() * 360) + 1800;
-    currentRotation += extraDegree;
-    
+    let totalSegments = wheelSegments.length;
+    let degPerSegment = 360 / totalSegments; // 30 degrees per slice
+
+    // 1. Pick a random winning index
+    let winningIndex = Math.floor(Math.random() * totalSegments);
+
+    // 2. Calculate exact center angle of this slice
+    let sliceCenter = (winningIndex * degPerSegment) + (degPerSegment / 2);
+
+    // 3. Calculate smooth forward rotation to land this exact center at the top pointer (0°)
+    let targetDeg = (360 - sliceCenter) % 360;
+    let currentDeg = currentRotation % 360;
+    let diff = targetDeg - currentDeg;
+    if (diff <= 0) diff += 360;
+
+    let extraSpins = 360 * 5; // 5 full rotations
+    currentRotation += extraSpins + diff;
+
     if (wheel) {
         wheel.style.transform = `rotate(${currentRotation}deg)`;
     }
 
-    // Determine prize after the 3-second spin animation completes
+    // 4. Award the exact prize matching the winning index after the 3-second animation
     setTimeout(() => {
-        let randomIndex = Math.floor(Math.random() * wheelSegments.length);
-        let prize = wheelSegments[randomIndex];
-
+        let prize = wheelSegments[winningIndex];
         let messageElement = document.getElementById("message");
         let wheelResult = document.getElementById("wheelResult");
 
@@ -86,12 +92,10 @@ function btnSpin_onclick() {
             window.currentSpinValue = prize;
         }
 
-        // Re-enable spin button
         if (spinButton) spinButton.disabled = false;
     }, 3000);
 }
 
-// Initialize wheel values when the DOM loads
 document.addEventListener("DOMContentLoaded", function() {
     initWheelSegments();
 });

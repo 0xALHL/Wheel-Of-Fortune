@@ -1,4 +1,3 @@
-
 "use strict";
 
 // User Stories:
@@ -34,6 +33,17 @@ let player = {
         }
 
         this.roundEarnings += amount;
+    },
+    
+    // Deduct round earnings (used for buying vowels)
+    deductRoundEarnings: function (amount) {
+        if (amount < 0) {
+            throw new Error("Deduction amount can't be negative.");
+        }
+        this.roundEarnings -= amount;
+        if (this.roundEarnings < 0) {
+            this.roundEarnings = 0;
+        }
     },
 
     // Reset round earnings
@@ -77,6 +87,9 @@ function ChoosePuzzle() {
 
     document.getElementById("letterGuess").value = "";
     document.getElementById("solveGuess").value = "";
+    
+    let vowelInput = document.getElementById("vowelGuess");
+    if (vowelInput) vowelInput.value = "";
 
     document.getElementById("message").textContent =
         "Guess a consonant or solve the puzzle.";
@@ -261,6 +274,77 @@ function btnSolve_onclick() {
 
         document.getElementById("solveGuess").value = "";
     }
+}
+
+// User Story: Buy a Vowel ($250 cost)
+function btnBuyVowel_onclick() {
+    let vowel;
+    let i;
+    let occurrences = 0;
+    const VOWEL_COST = 250;
+
+    if (gameOver) {
+        alert("This puzzle has already been solved.");
+        return;
+    }
+
+    // Check if player has enough money
+    if (player.roundEarnings < VOWEL_COST) {
+        alert("You need at least $" + VOWEL_COST + " in round earnings to buy a vowel.");
+        return;
+    }
+
+    vowel = document.getElementById("vowelGuess").value;
+    vowel = vowel.toUpperCase();
+
+    // Check that the player entered one letter
+    if (vowel.length !== 1 || vowel < "A" || vowel > "Z") {
+        alert("Please enter one letter from A to Z.");
+        return;
+    }
+
+    // Check that the letter is a vowel
+    if (!"AEIOU".includes(vowel)) {
+        alert("Please enter a vowel (A, E, I, O, U).");
+        return;
+    }
+
+    // Prevent duplicate guesses
+    if (guessedLetters.includes(vowel)) {
+        alert("That vowel has already been guessed.");
+        return;
+    }
+
+    // Deduct cost and update display
+    player.deductRoundEarnings(VOWEL_COST);
+    UpdateMoneyDisplay();
+
+    guessedLetters.push(vowel);
+
+    // Count occurrences
+    for (i = 0; i < currentPuzzle.answer.length; i++) {
+        if (currentPuzzle.answer.charAt(i) === vowel) {
+            occurrences++;
+        }
+    }
+
+    // Display results
+    if (occurrences > 0) {
+        document.getElementById("message").textContent =
+            "Good buy! The vowel " + vowel + " appears " +
+            occurrences + " time(s). ($250 deducted)";
+
+        revealMatchedLetters(vowel);
+    } else {
+        document.getElementById("message").textContent =
+            "Sorry, " + vowel + " is not in the puzzle. ($250 deducted)";
+
+        DisplayBoard();
+    }
+
+    document.getElementById("vowelGuess").value = "";
+
+    CheckBoard();
 }
 
 // Finish the puzzle and bank the player's earnings
