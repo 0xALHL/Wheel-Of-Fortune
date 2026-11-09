@@ -55,7 +55,7 @@ function btnSpin_onclick() {
     // 1. Pick a random winning index
     let winningIndex = Math.floor(Math.random() * totalSegments);
 
-    // 2. Adjust the target index by the pointer offset so the visual slice hits your CSS arrow
+    // 2. Adjust the target index by the pointer offset so the visual slice hits CSS arrow
     let visualIndex = (winningIndex + POINTER_OFFSET_SLICES + totalSegments) % totalSegments;
 
     // 3. Calculate exact center angle of this visual slice
@@ -74,7 +74,7 @@ function btnSpin_onclick() {
         wheel.style.transform = `rotate(${currentRotation}deg)`;
     }
 
-    // 5. Award the prize matching the TRUE winning index after the 3-second animation
+    // 5. Award the prize matching the true winning index after the 3-second animation
     setTimeout(() => {
         let prize = wheelSegments[winningIndex];
         let messageElement = document.getElementById("message");
