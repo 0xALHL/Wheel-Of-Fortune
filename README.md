@@ -4,7 +4,7 @@ Players take turns spinning the wheel, guessing letters, and solving phrase puzz
 
 ## Installation
 Before starting the game, make sure you have the following installed:
-* Visual Studio Code
+* Visual Studio Code (or any Coding IDE)
 * Git for Windows
 * Java JDK (a version compatible with the project)
 * A web browser, such as Google Chrome or Microsoft Edge
@@ -24,10 +24,10 @@ Before starting the game, make sure you have the following installed:
 12. Open the project and follow the startup instructions below.
 
 ## Instructions
-1. Open the Wheel-Of-Fortune project in Visual Studio Code.
-2. Use the project’s provided URL to open the game's frontend in the web browser
+1. Open the Wheel-Of-Fortune project in Visual Studio Code (or any coding IDE).
+2. Go to "index.html" and clicking "Run" in the top toolbar
 
-Note: These launch instructions and the URL will be clearer once Sprint 1 is complete.
+Note: The launch instructions and the URL will be clearer once Sprint 1 is complete.
 
 ## How to Use
 Once the game interface is available:
@@ -42,15 +42,15 @@ Note: Some features may not be available until their user stories have been impl
 
 ## User Stories
 - [ ] 1. As the CFO, I want the game to display ads of potential interest to the player, so that we can monetize the game
-- [ ] 2. As the “host”, I want the game to choose a clue and display a blank board corresponding to the clue so that we can have an interesting variety of clues and so that we can visualize.
+- [x] 2. As the “host”, I want the game to choose a clue and display a blank board corresponding to the clue so that we can have an interesting variety of clues and so that we can visualize.
 - [ ] 3. As the host, I want a wheel to be created for the current round so that each round has different arrangement of values.
 - [ ] 4. As the host, I want the proper player to be prompted and allowed to take a turn so that the game proceeds in an orderly and fair manner.
 - [ ] 5. As a player, I want to be able to spin the wheel and see the result so that I know the dollar value for my current guess.
 - [ ] 6. As a player, I want the spin to be visualized so that it doesn’t seem random or rigged.
-- [ ] 7. As a player, I want to guess a consonant and see results (display of letters, money) so that I can solve the puzzle.
+- [x] 7. As a player, I want to guess a consonant and see results (display of letters, money) so that I can solve the puzzle.
 - [ ] 8. As a player, I want to be able to buy a vowel and see results (letters, money) so that I can solve the puzzle.
 - [ ] 10. As the host, I want negative consequences to be enforced (lose a turn, bankrupt) so the game proceeds in an orderly and fair manner.
-- [ ] 11. As a player, I want clue guesses to be determined to be correct or incorrect so that I can win.
+- [x] 11. As a player, I want clue guesses to be determined to be correct or incorrect so that I can win.
 - [ ] 12. As a player, I want my money banked when I solve the puzzle so it is not lost in later rounds
 - [ ] 13. As a host, I want rounds to progress in the expected order, including toss-up questions so that the game follows a progression like on the TV show.
 - [ ] 14. As a host, I want toss-up questions to be displayed letter by letter until a player buzzes in that they have an answer so that the puzzle gets easier as seconds tick off.

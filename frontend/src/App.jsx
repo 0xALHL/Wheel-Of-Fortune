@@ -1,165 +1,231 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+
+const puzzles = [
+  { category: 'THING', answer: 'COMPUTER MOUSE' },
+  { category: 'FOOD', answer: 'CHOCOLATE CAKE' },
+  { category: 'PLACE', answer: 'PHILADELPHIA' },
+  { category: 'ANIMAL', answer: 'GOLDEN RETRIEVER' },
+  { category: 'THING', answer: 'VIDEO GAME' },
+  { category: 'PHRASE', answer: 'LIVE LAUGH LOVE' },
+];
+
+const wheelSegments = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 'BANKRUPT', 'LOSE A TURN'];
+const vowels = 'AEIOU';
 
 function App() {
-  const [isSpinning, setIsSpinning] = useState(false);
+  const [puzzle, setPuzzle] = useState(() => puzzles[Math.floor(Math.random() * puzzles.length)]);
+  const [guessedLetters, setGuessedLetters] = useState([]);
+  const [roundEarnings, setRoundEarnings] = useState(0);
+  const [totalEarnings, setTotalEarnings] = useState(0);
+  const [message, setMessage] = useState('Guess a consonant or solve the puzzle.');
+  const [letterGuess, setLetterGuess] = useState('');
+  const [vowelGuess, setVowelGuess] = useState('');
+  const [solveGuess, setSolveGuess] = useState('');
+  const [gameOver, setGameOver] = useState(false);
   const [rotation, setRotation] = useState(0);
-  const [result, setResult] = useState('Spin the wheel!');
+  const [isSpinning, setIsSpinning] = useState(false);
+  const [spinValue, setSpinValue] = useState(0);
+  const [wheelResult, setWheelResult] = useState('Spin that wheel!');
 
-  const slices = [
-    { label: '$500', color: '#ff4757' },
-    { label: '$600', color: '#2ed573' },
-    { label: '$700', color: '#1e90ff' },
-    { label: '$800', color: '#ffa502' },
-    { label: 'BANKRUPT', color: '#2f3542' },
-    { label: '$900', color: '#9b59b6' },
-    { label: 'LOSE A TURN', color: '#ff6b81' },
-    { label: '$1000', color: '#26de81' }
-  ];
-
-  const numSlices = slices.length;
-  const sliceAngle = 360 / numSlices; // 45 degrees per slice
-
-  const spinWheel = () => {
-    if (isSpinning) return;
-
-    setIsSpinning(true);
-    setResult('Spinning...');
-
-    // Pick a random slice
-    const selectedIndex = Math.floor(Math.random() * numSlices);
-
-    // Calculate how many degrees to spin so selectedIndex lands at 12 o'clock (0 deg)
-    const targetSliceCenter = selectedIndex * sliceAngle + sliceAngle / 2;
-    const targetDegree = (360 - targetSliceCenter) % 360;
-
-    // Add 5 full extra spins (1800 deg) to the current rotation base
-    const currentRot = rotation - (rotation % 360);
-    const totalRotation = currentRot + 1800 + targetDegree;
-
-    setRotation(totalRotation);
-
-    setTimeout(() => {
-      setIsSpinning(false);
-      setResult(`Landed on: ${slices[selectedIndex].label}`);
-    }, 4000);
+  const finishPuzzle = (bankAmount = roundEarnings) => {
+    if (gameOver) return;
+    setGameOver(true);
+    setTotalEarnings((total) => total + bankAmount);
+    setRoundEarnings(0);
+    setMessage(`Congratulations! You solved the puzzle and banked $${bankAmount}!`);
   };
 
-  // Helper to draw SVG pie slices
-  const getSlicePath = (index) => {
-    const startAngle = (index * sliceAngle - 90) * (Math.PI / 180);
-    const endAngle = ((index + 1) * sliceAngle - 90) * (Math.PI / 180);
-    const x1 = 180 + 180 * Math.cos(startAngle);
-    const y1 = 180 + 180 * Math.sin(startAngle);
-    const x2 = 180 + 180 * Math.cos(endAngle);
-    const y2 = 180 + 180 * Math.sin(endAngle);
-    return `M 180 180 L ${x1} ${y1} A 180 180 0 0 1 ${x2} ${y2} Z`;
+  const startNewPuzzle = () => {
+    let nextPuzzle = puzzles[Math.floor(Math.random() * puzzles.length)];
+    if (puzzles.length > 1 && nextPuzzle === puzzle) {
+      nextPuzzle = puzzles[(puzzles.indexOf(nextPuzzle) + 1) % puzzles.length];
+    }
+    setPuzzle(nextPuzzle);
+    setGuessedLetters([]);
+    setRoundEarnings(0);
+    setGameOver(false);
+    setSpinValue(0);
+    setMessage('Guess a consonant or solve the puzzle.');
+    setLetterGuess('');
+    setVowelGuess('');
+    setSolveGuess('');
+    setWheelResult('Spin that wheel!');
+  };
+
+  const checkBoard = (letters, bankAmount = roundEarnings) => {
+    const allRevealed = [...puzzle.answer].every((character) => character === ' ' || letters.includes(character));
+    if (allRevealed) finishPuzzle(bankAmount);
+  };
+
+  const guessLetter = () => {
+    if (gameOver) return window.alert('This puzzle has already been solved.');
+    const letter = letterGuess.trim().toUpperCase();
+    if (!/^[A-Z]$/.test(letter)) return window.alert('Please enter one letter from A to Z.');
+    if (vowels.includes(letter)) return window.alert('Please enter a consonant.');
+    if (guessedLetters.includes(letter)) return window.alert('You already guessed that letter.');
+
+    const nextGuesses = [...guessedLetters, letter];
+    const occurrences = [...puzzle.answer].filter((character) => character === letter).length;
+    setGuessedLetters(nextGuesses);
+    setLetterGuess('');
+    if (occurrences) {
+      const winnings = occurrences * (spinValue || 500);
+      const updatedRoundEarnings = roundEarnings + winnings;
+      setRoundEarnings((amount) => amount + winnings);
+      setMessage(`Correct! The letter ${letter} appears ${occurrences} time(s). You earned $${winnings}.`);
+      setSpinValue(0);
+      checkBoard(nextGuesses, updatedRoundEarnings);
+    } else {
+      setMessage(`Sorry, ${letter} is not in the puzzle.`);
+      setSpinValue(0);
+      checkBoard(nextGuesses);
+    }
+  };
+
+  const buyVowel = () => {
+    if (gameOver) return window.alert('This puzzle has already been solved.');
+    if (roundEarnings < 250) return window.alert('You need at least $250 in round earnings to buy a vowel.');
+    const vowel = vowelGuess.trim().toUpperCase();
+    if (!/^[A-Z]$/.test(vowel)) return window.alert('Please enter one letter from A to Z.');
+    if (!vowels.includes(vowel)) return window.alert('Please enter a vowel (A, E, I, O, U).');
+    if (guessedLetters.includes(vowel)) return window.alert('That vowel has already been guessed.');
+
+    const nextGuesses = [...guessedLetters, vowel];
+    const occurrences = [...puzzle.answer].filter((character) => character === vowel).length;
+    const updatedRoundEarnings = roundEarnings - 250;
+    setGuessedLetters(nextGuesses);
+    setRoundEarnings((amount) => amount - 250);
+    setVowelGuess('');
+    setMessage(occurrences
+      ? `Good buy! The vowel ${vowel} appears ${occurrences} time(s). ($250 deducted)`
+      : `Sorry, ${vowel} is not in the puzzle. ($250 deducted)`);
+    checkBoard(nextGuesses, updatedRoundEarnings);
+  };
+
+  const solvePuzzle = () => {
+    if (gameOver) return window.alert('This puzzle has already been solved.');
+    const answer = solveGuess.trim().toUpperCase();
+    if (!answer) return window.alert('Please enter your answer.');
+    if (answer === puzzle.answer) finishPuzzle();
+    else {
+      setMessage('Incorrect! Try again.');
+      setSolveGuess('');
+    }
+  };
+
+  const spinWheel = () => {
+    if (gameOver || isSpinning) return;
+    const winningIndex = Math.floor(Math.random() * wheelSegments.length);
+    const visualIndex = (winningIndex + 3) % wheelSegments.length;
+    const segmentAngle = 360 / wheelSegments.length;
+    const targetAngle = (360 - (visualIndex * segmentAngle + segmentAngle / 2)) % 360;
+    const currentAngle = ((rotation % 360) + 360) % 360;
+    const difference = (targetAngle - currentAngle + 360) % 360 || 360;
+    setRotation(rotation + 1800 + difference);
+    setIsSpinning(true);
+    setWheelResult('Spinning...');
+
+    window.setTimeout(() => {
+      const prize = wheelSegments[winningIndex];
+      setIsSpinning(false);
+      if (prize === 'BANKRUPT') {
+        setRoundEarnings(0);
+        setSpinValue(0);
+        setWheelResult('Spin result: BANKRUPT!');
+        setMessage('Ouch! Bankrupt. Round earnings lost. Turn over.');
+      } else if (prize === 'LOSE A TURN') {
+        setSpinValue(0);
+        setWheelResult('Spin result: LOSE A TURN!');
+        setMessage('Bad luck! You lose your turn.');
+      } else {
+        setSpinValue(prize);
+        setWheelResult(`Spin result: $${prize}`);
+        setMessage(`You spun $${prize}! Now guess a consonant.`);
+      }
+    }, 3000);
+  };
+
+  const handleEnter = (event, action) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      action();
+    }
   };
 
   return (
-    <div style={{ textAlign: 'center', fontFamily: 'sans-serif', marginTop: '40px' }}>
-      <h2>Wheel of Fortune</h2>
+    <>
+      <h1>Wheel of Fortune</h1>
+      <main id="content">
+        <section id="gameArea">
+          <section id="boardSection" aria-label="Puzzle board">
+            <div id="board">
+              {puzzle.answer.split(' ').map((word, wordIndex) => (
+                <div className="wordRow" key={`${word}-${wordIndex}`}>
+                  {[...word].map((letter, index) => (
+                    <div className={`letterBox${guessedLetters.includes(letter) || gameOver ? ' revealed' : ''}`} key={`${letter}-${index}`}>
+                      {guessedLetters.includes(letter) || gameOver ? letter : ''}
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+            <div id="category">{puzzle.category}</div>
+            <div id="message" role="status" aria-live="polite">{message}</div>
+          </section>
 
-      {/* Main Container */}
-      <div style={{ position: 'relative', width: '360px', height: '360px', margin: '0 auto' }}>
-        
-        {/* Top Pointer (12 o'clock) */}
-        <div style={{
-          position: 'absolute',
-          top: '-20px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          width: 0,
-          height: 0,
-          borderLeft: '14px solid transparent',
-          borderRight: '14px solid transparent',
-          borderTop: '26px solid #e74c3c',
-          zIndex: 30
-        }} />
+          <section id="wheelSection" aria-label="Prize wheel">
+            <h2>Wheel</h2>
+            <div id="wheel" style={{ transform: `rotate(${rotation}deg)` }}>
+              {wheelSegments.map((segment, index) => (
+                <div className="wheel-slice" key={segment} style={{ transform: `rotate(${index * 30 + 15}deg)` }}>
+                  <span className="slice-text">{typeof segment === 'number' ? `$${segment}` : segment}</span>
+                </div>
+              ))}
+              <div id="wheelCenter" />
+            </div>
+            <p id="wheelResult" aria-live="polite">{wheelResult}</p>
+            <button type="button" id="btnSpin" onClick={spinWheel} disabled={isSpinning || gameOver}>
+              {isSpinning ? 'Spinning...' : 'Spin'}
+            </button>
+          </section>
+        </section>
 
-        {/* Rotating SVG Wheel */}
-        <div style={{
-          width: '100%',
-          height: '100%',
-          borderRadius: '50%',
-          transform: `rotate(${rotation}deg)`,
-          transition: isSpinning ? 'transform 4s cubic-bezier(0.15, 0.9, 0.2, 1)' : 'none',
-          boxShadow: '0 8px 20px rgba(0,0,0,0.3)'
-        }}>
-          <svg width="360" height="360" viewBox="0 0 360 360">
-            {slices.map((slice, i) => {
-              const textAngle = i * sliceAngle + sliceAngle / 2 - 90;
-              const textRad = textAngle * (Math.PI / 180);
-              const tx = 180 + 115 * Math.cos(textRad);
-              const ty = 180 + 115 * Math.sin(textRad);
+        <section id="guessSection">
+          <h2>Guess a Letter</h2>
+          <div className="guessRow">
+            <label htmlFor="letterGuess">Enter a letter:</label>
+            <input id="letterGuess" type="text" maxLength="1" value={letterGuess} onChange={(event) => setLetterGuess(event.target.value)} onKeyDown={(event) => handleEnter(event, guessLetter)} />
+            <button type="button" onClick={guessLetter}>Guess Letter</button>
+          </div>
+          <div className="guessRow">
+            <label htmlFor="vowelGuess">Buy a vowel ($250):</label>
+            <input id="vowelGuess" type="text" maxLength="1" value={vowelGuess} onChange={(event) => setVowelGuess(event.target.value)} onKeyDown={(event) => handleEnter(event, buyVowel)} />
+            <button type="button" onClick={buyVowel}>Buy Vowel</button>
+          </div>
+          <div className="guessRow">
+            <label htmlFor="solveGuess">If ready to solve:</label>
+            <input id="solveGuess" type="text" value={solveGuess} onChange={(event) => setSolveGuess(event.target.value)} onKeyDown={(event) => handleEnter(event, solvePuzzle)} />
+            <button type="button" onClick={solvePuzzle}>Solve</button>
+          </div>
+          <div className="guessRow buttonRow">
+            <button type="button" id="btnNewGame" onClick={startNewPuzzle}>New Puzzle</button>
+          </div>
+        </section>
 
-              return (
-                <g key={i}>
-                  <path d={getSlicePath(i)} fill={slice.color} stroke="#2c3e50" strokeWidth="2" />
-                  <text
-                    x={tx}
-                    y={ty}
-                    fill="#ffffff"
-                    fontSize="13"
-                    fontWeight="bold"
-                    textAnchor="middle"
-                    dominantBaseline="middle"
-                    transform={`rotate(${textAngle + 90}, ${tx}, ${ty})`}
-                  >
-                    {slice.label}
-                  </text>
-                </g>
-              );
-            })}
-          </svg>
-        </div>
-
-        {/* Center Cap Hub */}
-        <div style={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: '60px',
-          height: '60px',
-          backgroundColor: '#f1c40f',
-          border: '4px solid #2c3e50',
-          borderRadius: '50%',
-          zIndex: 20,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontWeight: 'bold',
-          color: '#2c3e50',
-          fontSize: '12px'
-        }}>
-          SPIN
-        </div>
-      </div>
-
-      {/* Button & Result */}
-      <div style={{ marginTop: '30px' }}>
-        <button
-          onClick={spinWheel}
-          disabled={isSpinning}
-          style={{
-            padding: '12px 28px',
-            fontSize: '18px',
-            fontWeight: 'bold',
-            backgroundColor: isSpinning ? '#bdc3c7' : '#2ecc71',
-            color: 'white',
-            border: 'none',
-            borderRadius: '25px',
-            cursor: isSpinning ? 'not-allowed' : 'pointer'
-          }}
-        >
-          {isSpinning ? 'Spinning...' : 'SPIN'}
-        </button>
-
-        <p style={{ fontSize: '22px', fontWeight: 'bold', marginTop: '20px', color: '#2c3e50' }}>
-          {result}
-        </p>
-      </div>
-    </div>
+        <section id="playersSection" aria-label="Player scores">
+          {[1, 2, 3].map((playerNumber) => (
+            <section className="playerBox" id={`player${playerNumber}`} key={playerNumber}>
+              <h2>Player {playerNumber}</h2>
+              <label htmlFor={`roundMoney${playerNumber}`}>Round Money:</label>
+              <input id={`roundMoney${playerNumber}`} type="text" value={playerNumber === 1 ? roundEarnings : 0} disabled readOnly />
+              <br />
+              <label htmlFor={`totalMoney${playerNumber}`}>Total Money:</label>
+              <input id={`totalMoney${playerNumber}`} type="text" value={playerNumber === 1 ? totalEarnings : 0} disabled readOnly />
+            </section>
+          ))}
+        </section>
+      </main>
+    </>
   );
 }
 
