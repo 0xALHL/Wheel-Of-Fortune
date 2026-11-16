@@ -193,7 +193,7 @@ function App() {
         <section id="guessSection">
           <h2>Guess a Letter</h2>
           <div className="guessRow">
-            <label htmlFor="letterGuess">Enter a letter:</label>
+            <label htmlFor="letterGuess">Enter a consonant:</label>
             <input id="letterGuess" type="text" maxLength="1" value={letterGuess} onChange={(event) => setLetterGuess(event.target.value)} onKeyDown={(event) => handleEnter(event, guessLetter)} />
             <button type="button" onClick={guessLetter}>Guess Letter</button>
           </div>
