@@ -175,13 +175,15 @@ function App() {
 
           <section id="wheelSection" aria-label="Prize wheel">
             <h2>Wheel</h2>
-            <div id="wheel" style={{ transform: `rotate(${rotation}deg)` }}>
-              {wheelSegments.map((segment, index) => (
-                <div className="wheel-slice" key={segment} style={{ transform: `rotate(${index * 30 + 15}deg)` }}>
-                  <span className="slice-text">{typeof segment === 'number' ? `$${segment}` : segment}</span>
-                </div>
-              ))}
-              <div id="wheelCenter" />
+            <div id="wheelWrap">
+              <div id="wheel" style={{ transform: `rotate(${rotation}deg)` }}>
+                {wheelSegments.map((segment, index) => (
+                  <div className="wheel-slice" key={segment} style={{ transform: `rotate(${index * 30 + 15}deg)` }}>
+                    <span className="slice-text">{typeof segment === 'number' ? `$${segment}` : segment}</span>
+                  </div>
+                ))}
+                <div id="wheelCenter" />
+              </div>
             </div>
             <p id="wheelResult" aria-live="polite">{wheelResult}</p>
             <button type="button" id="btnSpin" onClick={spinWheel} disabled={isSpinning || gameOver}>
