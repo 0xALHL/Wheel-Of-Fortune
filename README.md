@@ -24,12 +24,13 @@ Before starting the game, make sure you have the following installed:
 12. Open the Wheel-Of-Fortune project and follow the startup instructions below.
 
 ## Instructions
-1. Run the commands
+1. Open the terminal.
+2. Run the following commands:
     * Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
     * cd frontend
     * npm install
     * npm run dev
-2. Visit the local URL or paste it into your preferred browser
+3. Visit the local URL outputted by clicking, or paste it into your preferred browser.
 
 Note: The launch instructions will change once the URL works standalone.
 
